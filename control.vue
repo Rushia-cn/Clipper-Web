@@ -72,7 +72,7 @@ export default {
             }
         },
         updateCurrentTime() {
-            this.curTime = Number(this.ytb.getCurrentTime()).toFixed(2)
+            this.curTime = Number(this.ytb.getCurrentTime()).toFixed(3)
             requestAnimationFrame(this.updateCurrentTime)
         },
         addFrom(){
