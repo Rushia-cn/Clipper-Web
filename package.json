@@ -1,7 +1,7 @@
 {
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "npm install -g @vue/cli && vue build index.js",
+    "build": "npm install -g @vue/cli && npm install -g @vue/cli-service-global && vue build index.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
