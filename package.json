@@ -1,12 +1,12 @@
 {
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --report",
+    "build": "vue build index.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "vue-youtube-embed": "^2.2.2",
-    "@vue/cli": "^2.6.11",
+    "vue": "*",
     "@vue/cli-service": "~4.4.0"
   },
   "devDependencies": {
