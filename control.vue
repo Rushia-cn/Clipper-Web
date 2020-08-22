@@ -1,5 +1,9 @@
 <template>
     <div id="control-panel">
+        <div id="urlInput">
+            <input v-model="videoURL" placeholder="Youtube Video Url" />
+            <button type="submit" @click="updateUrl">GO</button>
+        </div>
         <youtube :videoId="videoId" @ready="videoReady" ref="ytb"></youtube>
         <div id="jump-group">
             <button type="button" @click="jump(-3)"> -3s </button>
@@ -16,7 +20,17 @@
         <div id="timestamp-group" v-for="(ts, i) in timeStamps" :key="i">
             <button type="button" @click="jumpTo(ts.from)"> {{ (ts.from !== null) ? ts.from : "N/A" }} </button>
             <button type="button" @click="jumpTo(ts.to)"> {{ (ts.to !== null) ? ts.to : "N/A" }} </button>
+            <button type="button" @click="timeStamps.pop(i)">X</button>
         </div>
+        <div id="metaInput">
+            Name:
+            <input id="nameInput" placeholder="zh:歪比巴伯 en:FooBar"/>
+            Category: 
+            <select>
+                <option v-for="(option, index) in categories" value="option" :key="index">{{index}}</option>
+            </select>
+        </div>
+        <button type="submit">Submit</button>
     </div>
 </template>
 <script>
@@ -24,6 +38,13 @@ export default {
     data(){
         return {
             videoId: "LWzM5Ak5yOQ",
+            videoURL: "",
+            categories: {
+                "moe": {
+                    zh: "awsl",
+                    en: "moe"
+                }
+            },
             playerVar:{ rel: 0 },
             inpTime: 0,
             curTime: 0,
@@ -84,7 +105,7 @@ export default {
             if (this.lastComplete){
                 alert("Create one with from first")
                 return
-            } else if (this.last.from > this.curTime){
+            } else if (this.last.from >= this.curTime){
                 alert("To must be greater than From")
                 return
             }
@@ -95,6 +116,9 @@ export default {
                 from: null,
                 to: null
             })
+        },
+        updateUrl(){
+            this.videoId = this.$youtube.getIdFromURL(this.videoURL)
         }
     }
 }
