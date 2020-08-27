@@ -1,29 +1,37 @@
 <template>
 <main id="app">
+
     <youtube :videoId="videoId" @ready="videoReady" :player-vars="playerVars" :player-width="playerWidth" :player-height="playerHeight" ref="ytb"></youtube>
-    <div id="controller">
-        <vs-button size="small" type="flat" @click="forward(-1.5)">
-            <Rewind :size="20" />
-        </vs-button>
-        <vs-button size="large" class="large-btn" type="filled" @click="addFrom">From</vs-button>
-        <a style="cursor:pointer" @click="startDialog">{{formatedCurTime}}</a>
-        <vs-button size="large" class="large-btn" type="filled" @click="addTo">To</vs-button>
-        <vs-button size="small" type="flat" @click="forward(1.5)">
-            <FastForward :size="20" />
-        </vs-button>
-        <vs-prompt :active.sync="dialog" title="Jump To" @cancel="updateCurTime=''" @accept="jumpTo($s2t(updateCurTime))">
-            <div class="prompt">
-                <vs-input label="TimeStamp (HH:MM:SS[.xxx])" v-model="updateCurTime" />
-            </div>
-        </vs-prompt>
+    <div id="upper">
+        <div id="controller">
+
+            <vs-button size="small" type="flat" @click="forward(-1.5)">
+                <Rewind :size="20" />
+            </vs-button>
+            <vs-button size="large" class="large-btn" type="filled" @click="addFrom">From</vs-button>
+            <a style="cursor:pointer" @click="startDialog">{{formatedCurTime}}</a>
+            <vs-button size="large" class="large-btn" type="filled" @click="addTo">To</vs-button>
+            <vs-button size="small" type="flat" @click="forward(1.5)">
+                <FastForward :size="20" />
+            </vs-button>
+            <vs-prompt :active.sync="dialog" title="Jump To" @cancel="updateCurTime=''" @accept="jumpTo($s2t(updateCurTime))">
+                <div class="prompt">
+                    <vs-input label="TimeStamp (HH:MM:SS[.xxx])" v-model="updateCurTime" />
+                </div>
+            </vs-prompt>
+        </div>
+        <div id="id-input">
+            <a style="wrap: none">Youtube Video ID:</a>
+            <vs-input v-model="value1" />
+        </div>
+
     </div>
     <div id="list-view">
         <div v-for="(v, i) in items" :key="i" class="line">
             <div class="ts">
                 <controlButton v-model="v.from" />
-                <div style="width: 1rem; height:1rem; "></div>
-                -
-                <div style="width: 1rem; height:1rem; "></div>
+                <div style="width: 105px; height:1rem; "> </div>
+
                 <controlButton v-model="v.to" />
             </div>
             <div class="ts">
@@ -163,11 +171,36 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    margin: 20px;
+    margin: 20px auto;
     display: flex;
     align-items: center;
     flex-direction: column;
-    max-width: 990px
+    max-width: 990px;
+}
+
+#upper {
+    display: flex;
+    width: 100%;
+}
+
+#id-input {
+    display: flex;
+    margin: 10px;
+    align-items: center
+}
+
+#controller {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-grow: 1;
+}
+
+#list-view {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 40px
 }
 
 main {
@@ -188,17 +221,11 @@ main {
     bottom: -1px
 }
 
-#list-view {
-    width: 100%;
-    display: flex;
-    flex-direction: column
-}
-
 .line {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap
+    flex-wrap: wrap;
 }
 
 .ts {

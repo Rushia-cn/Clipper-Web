@@ -74,6 +74,7 @@ export default {
 
 <style>
 .control-button {
-    margin: 3px 10px
+    margin: 3px 10px;
+    width: 10rem
 }
 </style>
