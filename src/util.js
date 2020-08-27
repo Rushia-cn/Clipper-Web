@@ -14,8 +14,8 @@ function TStoNumber(ts) {
 }
 
 function numberToTs(v) {
-    if (v === 0) return "00:00:00.000"
-    if (!v) return "N/A"
+    if (v === null || v === undefined) return "N/A"
+    if (v <= 0) return "00:00:00.000"
     const ms = v % 1
     const s = Math.round(v - ms)
     const date = new Date(0)

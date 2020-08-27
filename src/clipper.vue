@@ -11,7 +11,7 @@
         <vs-button size="small" type="flat" @click="forward(1.5)">
             <FastForward :size="20" />
         </vs-button>
-        <vs-prompt :active.sync="dialog" title="Jump To">
+        <vs-prompt :active.sync="dialog" title="Jump To" @cancel="updateCurTime=''" @accept="jumpTo($s2t(updateCurTime))">
             <div class="prompt">
                 <vs-input label="TimeStamp (HH:MM:SS[.xxx])" v-model="updateCurTime" />
             </div>
@@ -109,7 +109,7 @@ export default {
             })
         },
         completed(ts) {
-            return ts.from && ts.to
+            return ts.from !== null && ts.to !== null
         },
         addFrom() {
             if (this.lastComplete)
