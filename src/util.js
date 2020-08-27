@@ -27,7 +27,7 @@ function numberToTs(v) {
 function formatName(v){
     if (typeof (v) !== 'object') return "N/A"
     if (Object.values(v).every(v => !v)) return "No name (click to set)"
-    const values = Object.entries(v).map(([k, v]) => `${k} ${v}`)
+    const values = Object.values(v)
     if (!values) return "No name"
     else return values.join(" / ") 
 }

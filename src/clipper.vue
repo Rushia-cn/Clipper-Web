@@ -12,11 +12,6 @@
             <vs-button size="small" type="flat" @click="forward(1.5)" title="Forward for 1.5s">
                 <FastForward :size="20" />
             </vs-button>
-            <vs-prompt :active.sync="dialog" title="Jump To" @cancel="updateCurTime=''" @accept="jumpTo($s2t(updateCurTime))">
-                <div class="prompt">
-                    <vs-input label="TimeStamp (HH:MM:SS[.xxx])" v-model="updateCurTime" />
-                </div>
-            </vs-prompt>
         </div>
         <div id="id-input" title="Press enter to apply">
             <a style="wrap: none">Youtube Video ID:</a>
@@ -39,6 +34,9 @@
                         Export as Rushia Button batch
                     </vs-dropdown-item>
                     <vs-dropdown-item @click="inDev">
+                        Export as Raw json
+                    </vs-dropdown-item>
+                    <vs-dropdown-item @click="inDev">
                         Save to pasteboard
                     </vs-dropdown-item>
                 </vs-dropdown-menu>
@@ -47,7 +45,7 @@
     </div>
     <div id="list-view">
         <div v-for="(v, i) in items" :key="i" class="line-wrapper">
-            <a class="title line" @click="changeThisName(v)">{{$formatName(v.name)}}</a>
+            <a class="title line" @click="changeThisName(i)">{{$formatName(v.name)}}</a>
             <div class="line">
                 <div class="ts">
                     <controlButton v-model="v.from" />
@@ -59,7 +57,7 @@
                 Category:
                 <vs-input title="Category: For Buttons that follows RushiaButton's standard" v-model="v.cat"> </vs-input>
                 <div class="ts">
-                    <vs-switch type="border" v-model="v.looping" :disabled="!completed(v)" @click="loop(v)" :vs-value="v">
+                    <vs-switch type="border" v-model="v.looping" :disabled="!completed(v) || v.to < v.from" @click="loop(v)" :vs-value="v">
                         <span slot="on">Loop On</span>
                         <span slot="off">Loop Off</span>
                     </vs-switch>
@@ -69,16 +67,18 @@
                 </div>
             </div>
         </div>
-        <vs-prompt :active.sync="updatingName" title="Set name" @cancel="afterChaningName" @accept="afterChaningName">
-            <div class="prompt" v-if="updatingName">
-                <!-- vs-input label='Name (zh:"歪比巴伯")' v-model="updateCurTime" -->
-                <div v-for='(k, i) in Object.keys(changingItem.name)' :key="i" class="edit-line">
-                    <a>{{k}}:</a>
-                    <vs-input v-model="changingItem.name[k]" class="prompt-input"></vs-input>
-                </div>
-            </div>
-        </vs-prompt>
     </div>
+    <vs-prompt :active.sync="dialog" title="Jump To" @cancel="updateCurTime=''" @accept="jumpTo($s2t(updateCurTime))">
+        <div class="prompt">
+            <vs-input label="TimeStamp (HH:MM:SS[.xxx])" v-model="updateCurTime" />
+        </div>
+    </vs-prompt>
+    <vs-prompt :active.sync="updatingName" title="Set name" @cancel="afterChangingName(false)" @accept="afterChangingName(true)" v-if="updatingName">
+        <div v-for='(k, i) in Object.keys(tempName)' :key="i" class="edit-line">
+            <a>{{k}}:</a>
+            <vs-input v-model="tempName[k]" class="prompt-input"></vs-input>
+        </div>
+    </vs-prompt>
     <footer>
         <vs-alert :active.sync="showAlert" color="danger">
             {{alertContent}}
@@ -108,7 +108,12 @@ export default {
             updateCurTime: null,
             updateVid: this.videoId,
             updatingName: false,
-            changingItem: null
+            changingItemIndex: null,
+            tempName: {
+                en: null,
+                zh: null,
+                jp: null
+            }
         }
     },
     mounted() {
@@ -134,6 +139,9 @@ export default {
         },
         metaInputed() {
             return this.items.some(item => item.cat || item.name)
+        },
+        copyOfChangingItem() {
+            return JSON.parse(JSON.stringify(this.changingItem))
         }
     },
     methods: {
@@ -176,6 +184,7 @@ export default {
                     jp: ""
                 }
             })
+            this.$forceUpdate()
         },
         completed(ts) {
             return ts.from !== null && ts.to !== null
@@ -183,11 +192,13 @@ export default {
         addFrom() {
             if (this.lastComplete)
                 this.newTS()
+            else
+                this.alert("Use 'To' to complete this clip first!")
         },
         addTo() {
             const last = this.last
             if (this.lastComplete) {
-                this.alert("Create one with 'from' button first")
+                this.alert("Create one with 'From' button first")
                 return
             } else if (last.from >= this.curTime) {
                 this.alert("'To' must be greater than 'From'")
@@ -216,13 +227,15 @@ export default {
             this.updateCurTime = this.formatedCurTime
             this.pause()
         },
-        changeThisName(item) {
+        changeThisName(index) {
             this.updatingName = true
-            this.changingItem = item
+            this.changingItemIndex = index
+            this.tempName = JSON.parse(JSON.stringify(this.items[this.changingItemIndex].name))
         },
-        afterChaningName() {
-            this.chaningItem = null
+        afterChangingName(acceptted) {
+            if (acceptted) this.items[this.changingItemIndex].name = this.tempName
             this.updatingName = false
+            this.tempName = null
         }
     },
     components: {
