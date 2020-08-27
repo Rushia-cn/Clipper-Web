@@ -20,11 +20,11 @@
     <div id="list-view">
         <div v-for="(v, i) in items" :key="i" class="line">
             <div class="ts">
-                <vs-button type="border" class="small-btn" @click="jumpTo(v.from)">{{$t2s(v.from)}}</vs-button>
+                <controlButton :value="v.from" />
                 <div style="width: 1rem; height:1rem; "></div>
                 -
                 <div style="width: 1rem; height:1rem; "></div>
-                <vs-button type="border" class="small-btn" @click="jumpTo(v.to)">{{$t2s(v.to)}}</vs-button>
+                <controlButton :value="v.to" />
             </div>
             <div class="ts">
                 <vs-switch type="border" v-model="v.looping" :disabled="!completed(v)" @click="loop(v)" :vs-value="v">
@@ -37,7 +37,6 @@
             </div>
         </div>
     </div>
-    <controlButton :value="0" />
 </main>
 </template>
 
@@ -180,10 +179,6 @@ main {
 .large-btn {
     margin: 1rem;
     width: 10rem
-}
-
-.small-btn {
-    margin: 3px 10px
 }
 
 .material-design-icon {
