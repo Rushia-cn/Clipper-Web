@@ -26,41 +26,6 @@ function numberToTs(v) {
     return date.toISOString().substr(11, 12)
 }
 
-const items = {
-    ts: [],
-    getLast() {
-        return items.ts[items.ts.length - 1]
-    },
-    lastComplete() {
-        if (items.ts.length === 0) return true
-        const last = items.getLast()
-        console.log(last)
-        return last.from !== null && last.to !== null
-    },
-    newTS(curTime) {
-        items.ts.push({
-            from: curTime,
-            to: null
-        })
-    },
-    addFrom(curTime) {
-        Vue.$forceUpdate()
-        if (items.lastComplete())
-            items.newTS(curTime)
-    },
-    addTo(curTime) {
-        const last = items.getLast()
-        if (items.lastComplete()) {
-            alert("Create one with from first")
-            return
-        } else if (last.from >= items.curTime) {
-            alert("To must be greater than From")
-            return
-        }
-        last.to = curTime
-    }
-}
-
 export {
     TStoNumber,
     numberToTs,

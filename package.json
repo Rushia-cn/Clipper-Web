@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "clipper-web",
   "version": "0.1.0",
   "private": true,
@@ -14,7 +13,6 @@
     "vue-material-design-icons": "^4.9.0",
     "vue-youtube-embed": "^2.2.2",
     "vuesax": "^3.11.17",
-    "vuex": "^3.5.1",
     "mini-css-extract-plugin": "0.8.0"
   },
   "devDependencies": {
@@ -45,19 +43,4 @@
     "last 2 versions",
     "not dead"
   ]
-=======
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "npm install -g @vue/cli && npm install -g @vue/cli-service-global && vue build index.js",
-    "lint": "vue-cli-service lint"
-  },
-  "dependencies": {
-    "vue-youtube-embed": "^2.2.2",
-    "vue": "*",
-    "@vue/cli-service": "~4.4.0"
-  },
-  "devDependencies": {
-    "@vue/cli-service": "~4.4.0"
-  }
->>>>>>> b75cdd99181844995096ca7670e7303f5b9503c7
 }
