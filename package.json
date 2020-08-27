@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "material-icons": "^0.3.1",
+    "mini-css-extract-plugin": "0.8.0",
     "vue": "^2.6.11",
+    "vue-async-computed": "^3.9.0",
     "vue-material-design-icons": "^4.9.0",
     "vue-youtube-embed": "^2.2.2",
-    "vuesax": "^3.11.17",
-    "mini-css-extract-plugin": "0.8.0"
+    "vuesax": "^3.11.17"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

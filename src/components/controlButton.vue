@@ -1,7 +1,6 @@
 <template>
-<vs-button class="control-button" @mousedown="move" @mousewheel.prevent="wheel" type="border" title="Drag or scroll to fine-tune">
+<vs-button class="control-button" @mousedown="move" @mousewheel.prevent="wheel" type="border" title="Drag or scroll to fine-tune" @mouseover="hover = true" @mouseleave="hover = false">
     {{$t2s(changingValue)}}
-    <div class="inner-button"></div>
 </vs-button>
 </template>
 
@@ -22,7 +21,8 @@ export default {
                 y: null
             },
             changedValue: this.value,
-            changingValue: this.value
+            changingValue: this.value,
+            hover: false
         }
     },
     watch: {
@@ -75,6 +75,7 @@ export default {
 <style>
 .control-button {
     margin: 3px 10px;
-    width: 10rem
+    width: 10rem;
+    transition: all ease 0.3s
 }
 </style>

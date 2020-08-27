@@ -12,22 +12,29 @@ import {
   vsPopup,
   vsPrompt,
   vsSwitch,
-  vsIcon
+  vsIcon,
+  vsDropDown,
+  vsAlert,
 } from 'vuesax'
 
 import 'vuesax/dist/vuesax.css'
+import 'material-icons/iconfont/material-icons.css';
 
 import {
   TStoNumber,
   numberToTs,
-  items
+  formatName,
+  parseName,
+  namePattern
 } from '@/util.js'
 
 Vue.config.productionTip = false
 Vue.prototype.$getId = getIdFromURL
 Vue.prototype.$s2t = TStoNumber // str to timestamp
 Vue.prototype.$t2s = numberToTs // timestamp to str
-Vue.prototype.$items = items
+Vue.prototype.$formatName = formatName
+Vue.prototype.$parseName = parseName
+Vue.prototype.$namePattern = namePattern
 
 Vue.use(VueYouTubeEmbed)
 Vue.use(vsButton)
@@ -37,6 +44,8 @@ Vue.use(vsInput)
 Vue.use(vsPrompt)
 Vue.use(vsSwitch)
 Vue.use(vsIcon)
+Vue.use(vsDropDown)
+Vue.use(vsAlert)
 
 new Vue({
   render: h => h(clipper),

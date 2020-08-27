@@ -1,17 +1,15 @@
 <template>
 <main id="app">
-
     <youtube :videoId="videoId" @ready="videoReady" :player-vars="playerVars" :player-width="playerWidth" :player-height="playerHeight" ref="ytb"></youtube>
     <div id="upper">
         <div id="controller">
-
-            <vs-button size="small" type="flat" @click="forward(-1.5)">
+            <vs-button size="small" type="flat" @click="forward(-1.5)" title="Rewind for 1.5s">
                 <Rewind :size="20" />
             </vs-button>
-            <vs-button size="large" class="large-btn" type="filled" @click="addFrom">From</vs-button>
+            <vs-button size="large" class="large-btn" type="filled" @click="addFrom" title="Add a new interval">From</vs-button>
             <a style="cursor:pointer" @click="startDialog">{{formatedCurTime}}</a>
-            <vs-button size="large" class="large-btn" type="filled" @click="addTo">To</vs-button>
-            <vs-button size="small" type="flat" @click="forward(1.5)">
+            <vs-button size="large" class="large-btn" type="filled" @click="addTo" title="Set last.to with current time">To</vs-button>
+            <vs-button size="small" type="flat" @click="forward(1.5)" title="Forward for 1.5s">
                 <FastForward :size="20" />
             </vs-button>
             <vs-prompt :active.sync="dialog" title="Jump To" @cancel="updateCurTime=''" @accept="jumpTo($s2t(updateCurTime))">
@@ -20,31 +18,72 @@
                 </div>
             </vs-prompt>
         </div>
-        <div id="id-input">
+        <div id="id-input" title="Press enter to apply">
             <a style="wrap: none">Youtube Video ID:</a>
-            <vs-input v-model="value1" />
+            <vs-input v-model="updateVid" @keydown.enter="videoId = updateVid" />
         </div>
-
+        <div id="submit">
+            <vs-dropdown @click="inDev">
+                <vs-button type="filled" size="large" title="Upload Directly" style="width: 100px">Upload</vs-button>
+                <vs-dropdown-menu>
+                    <vs-dropdown-item @click="inDev">
+                        Send to Telegram
+                    </vs-dropdown-item>
+                    <vs-dropdown-item @click="inDev">
+                        Send to Github
+                    </vs-dropdown-item>
+                    <vs-dropdown-item @click="inDev">
+                        Export as ffmpeg command
+                    </vs-dropdown-item>
+                    <vs-dropdown-item @click="inDev">
+                        Export as Rushia Button batch
+                    </vs-dropdown-item>
+                    <vs-dropdown-item @click="inDev">
+                        Save to pasteboard
+                    </vs-dropdown-item>
+                </vs-dropdown-menu>
+            </vs-dropdown>
+        </div>
     </div>
     <div id="list-view">
-        <div v-for="(v, i) in items" :key="i" class="line">
-            <div class="ts">
-                <controlButton v-model="v.from" />
-                <div style="width: 105px; height:1rem; "> </div>
-
-                <controlButton v-model="v.to" />
-            </div>
-            <div class="ts">
-                <vs-switch type="border" v-model="v.looping" :disabled="!completed(v)" @click="loop(v)" :vs-value="v">
-                    <span slot="on">Loop On</span>
-                    <span slot="off">Loop Off</span>
-                </vs-switch>
-                <vs-button @click="items.pop(i)" type="flat">
-                    <TrashCanOutline :size="20" />
-                </vs-button>
+        <div v-for="(v, i) in items" :key="i" class="line-wrapper">
+            <a class="title line" @click="changeThisName(v)">{{$formatName(v.name)}}</a>
+            <div class="line">
+                <div class="ts">
+                    <controlButton v-model="v.from" />
+                    <a style="width: 105px; height:1rem" title="Clip Length">
+                        {{v.to - v.from > 0 ? $t2s(v.to - v.from) : "N/A"}}
+                    </a>
+                    <controlButton v-model="v.to" />
+                </div>
+                Category:
+                <vs-input title="Category: For Buttons that follows RushiaButton's standard" v-model="v.cat"> </vs-input>
+                <div class="ts">
+                    <vs-switch type="border" v-model="v.looping" :disabled="!completed(v)" @click="loop(v)" :vs-value="v">
+                        <span slot="on">Loop On</span>
+                        <span slot="off">Loop Off</span>
+                    </vs-switch>
+                    <vs-button @click="items.pop(i)" type="flat">
+                        <TrashCanOutline :size="20" />
+                    </vs-button>
+                </div>
             </div>
         </div>
+        <vs-prompt :active.sync="updatingName" title="Set name" @cancel="afterChaningName" @accept="afterChaningName">
+            <div class="prompt" v-if="updatingName">
+                <!-- vs-input label='Name (zh:"歪比巴伯")' v-model="updateCurTime" -->
+                <div v-for='(k, i) in Object.keys(changingItem.name)' :key="i" class="edit-line">
+                    <a>{{k}}:</a>
+                    <vs-input v-model="changingItem.name[k]" class="prompt-input"></vs-input>
+                </div>
+            </div>
+        </vs-prompt>
     </div>
+    <footer>
+        <vs-alert :active.sync="showAlert" color="danger">
+            {{alertContent}}
+        </vs-alert>
+    </footer>
 </main>
 </template>
 
@@ -56,19 +95,20 @@ import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 export default {
     data() {
         return {
-            videoId: "Exk34o-MMIE",
+            videoId: "1y8iL0v2o-g",
             ytb: null,
+            alertContent: null,
+            showAlert: false,
             curTime: 0,
             playerVars: {},
             playerHeight: '540',
             playerWidth: '990',
-            items: [{
-                from: 60,
-                to: 120,
-                looping: false
-            }],
+            items: [],
             dialog: false,
-            updateCurTime: null
+            updateCurTime: null,
+            updateVid: this.videoId,
+            updatingName: false,
+            changingItem: null
         }
     },
     mounted() {
@@ -91,9 +131,24 @@ export default {
                 state: this.items.some(item => item.looping),
                 item: this.items.find(item => item.looping)
             }
+        },
+        metaInputed() {
+            return this.items.some(item => item.cat || item.name)
         }
     },
     methods: {
+        alert(content) {
+            this.alertContent = content
+            this.showAlert = true
+            const that = this
+            setTimeout(function () {
+                that.showAlert = false
+                that.alertContent = null
+            }, 3000)
+        },
+        inDev() {
+            this.alert("Sorry, this function is still in development")
+        },
         pause() {
             this.ytb.pauseVideo()
         },
@@ -113,7 +168,13 @@ export default {
             this.items.push({
                 from: this.curTime,
                 to: null,
-                looping: false
+                looping: false,
+                cat: null,
+                name: {
+                    en: "",
+                    zh: "",
+                    jp: ""
+                }
             })
         },
         completed(ts) {
@@ -126,10 +187,10 @@ export default {
         addTo() {
             const last = this.last
             if (this.lastComplete) {
-                alert("Create one with from first")
+                this.alert("Create one with 'from' button first")
                 return
             } else if (last.from >= this.curTime) {
-                alert("To must be greater than From")
+                this.alert("'To' must be greater than 'From'")
                 return
             }
             last.to = this.curTime
@@ -155,6 +216,14 @@ export default {
             this.updateCurTime = this.formatedCurTime
             this.pause()
         },
+        changeThisName(item) {
+            this.updatingName = true
+            this.changingItem = item
+        },
+        afterChaningName() {
+            this.chaningItem = null
+            this.updatingName = false
+        }
     },
     components: {
         Rewind,
@@ -189,6 +258,13 @@ export default {
     align-items: center
 }
 
+#submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
 #controller {
     display: flex;
     width: 100%;
@@ -209,6 +285,59 @@ main {
     padding: 10px
 }
 
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    max-width: 990px
+}
+
+a {
+    color: #333
+}
+
+.title {
+    margin: 5px 10px
+}
+
+.edit-line {
+    display: flex;
+    align-items: center;
+    margin: 3px 0;
+    justify-content: space-between
+}
+
+.edit-line a {
+    margin: 0 10px
+}
+
+.prompt-input {
+    width: 100% !important
+}
+
+.vs-con-dropdown {
+    cursor: pointer !important
+}
+
+.con-vs-alert {
+    background: rgba(var(--vs-danger), 0.85) !important
+}
+
+.vs-alert {
+    color: #fff
+}
+
+.btn-drop {
+    border-radius: 0px 5px 5px 0px;
+    border-left: 1px solid rgba(255, 255, 255, .2);
+}
+
+.btnx {
+    margin-left: 10px !important;
+    border-radius: 5px 0px 0px 5px;
+}
+
 .large-btn {
     margin: 1rem;
     width: 10rem
@@ -226,6 +355,11 @@ main {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    align-items: center
+}
+
+.arrow {
+    bottom: 2.5px
 }
 
 .ts {
