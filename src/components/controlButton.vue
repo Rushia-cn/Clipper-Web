@@ -65,6 +65,7 @@ export default {
         },
         commit() {
             this.changedValue = this.changingValue
+            this.$emit('input', this.changingValue)
             this.$parent.jumpTo(this.changedValue)
         }
     }

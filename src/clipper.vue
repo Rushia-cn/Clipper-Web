@@ -20,11 +20,11 @@
     <div id="list-view">
         <div v-for="(v, i) in items" :key="i" class="line">
             <div class="ts">
-                <controlButton :value="v.from" />
+                <controlButton v-model="v.from" />
                 <div style="width: 1rem; height:1rem; "></div>
                 -
                 <div style="width: 1rem; height:1rem; "></div>
-                <controlButton :value="v.to" />
+                <controlButton v-model="v.to" />
             </div>
             <div class="ts">
                 <vs-switch type="border" v-model="v.looping" :disabled="!completed(v)" @click="loop(v)" :vs-value="v">
