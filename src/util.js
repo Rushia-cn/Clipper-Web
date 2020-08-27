@@ -1,5 +1,3 @@
-import Vue from './App.vue'
-
 function TStoNumber(ts) {
     try {
         const hms = ts.split(':')
@@ -28,6 +26,5 @@ function numberToTs(v) {
 
 export {
     TStoNumber,
-    numberToTs,
-    items
+    numberToTs
 }
