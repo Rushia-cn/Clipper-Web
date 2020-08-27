@@ -37,10 +37,12 @@
             </div>
         </div>
     </div>
+    <controlButton :value="0" />
 </main>
 </template>
 
 <script>
+import controlButton from '@/components/controlButton'
 import Rewind from 'vue-material-design-icons/Rewind.vue';
 import FastForward from 'vue-material-design-icons/FastForward.vue';
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
@@ -150,7 +152,8 @@ export default {
     components: {
         Rewind,
         FastForward,
-        TrashCanOutline
+        TrashCanOutline,
+        controlButton
     }
 }
 </script>
