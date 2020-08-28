@@ -4,6 +4,7 @@ import VueYouTubeEmbed from 'vue-youtube-embed'
 import {
   getIdFromURL
 } from 'vue-youtube-embed'
+import VueHighlightJS from 'vue-highlightjs'
 
 import {
   vsButton,
@@ -46,6 +47,7 @@ Vue.use(vsSwitch)
 Vue.use(vsIcon)
 Vue.use(vsDropDown)
 Vue.use(vsAlert)
+Vue.use(VueHighlightJS)
 
 new Vue({
   render: h => h(clipper),
