@@ -16,10 +16,12 @@ import {
   vsIcon,
   vsDropDown,
   vsAlert,
+  vsTextarea,
+  vsTooltip
 } from 'vuesax'
 
 import 'vuesax/dist/vuesax.css'
-import 'material-icons/iconfont/material-icons.css';
+import 'material-icons/iconfont/material-icons.css'
 
 import {
   TStoNumber,
@@ -47,6 +49,8 @@ Vue.use(vsSwitch)
 Vue.use(vsIcon)
 Vue.use(vsDropDown)
 Vue.use(vsAlert)
+Vue.use(vsTextarea)
+Vue.use(vsTooltip)
 Vue.use(VueHighlightJS)
 
 new Vue({

@@ -1,5 +1,5 @@
 <template>
-<vs-button class="control-button" @mousedown="move" @mousewheel.prevent="wheel" type="border" title="Drag or scroll to fine-tune" @mouseover="hover = true" @mouseleave="hover = false">
+<vs-button class="control-button" @mousedown="move" @mousewheel.prevent="wheel" type="border" title="Drag or scroll to fine-tune">
     {{ $t2s(changingValue) }}
 </vs-button>
 </template>
@@ -12,7 +12,10 @@ export default {
             type: Number,
             default: 0.03
         },
-        jump: Boolean
+        jump: {
+            type: Boolean,
+            default: true
+        }
     },
     data() {
         return {
@@ -23,7 +26,7 @@ export default {
             },
             changedValue: this.value,
             changingValue: this.value,
-            hover: false
+            lastDown: null
         }
     },
     watch: {
@@ -49,6 +52,7 @@ export default {
             this.holding = true
             this.xy.x = e.clientX
             this.xy.y = e.clientY
+            this.lastDown = Date.now()
             window.addEventListener('mousemove', this.mouseMove)
             window.addEventListener('mouseup', this.mouseUp)
         },
@@ -61,12 +65,14 @@ export default {
         mouseUp() {
             window.removeEventListener('mousemove', this.mouseMove)
             window.removeEventListener('mouseup', this.mouseUp)
-            this.commit()
+            if (!this.jump && Math.abs(Date.now() - this.lastDown) < 100) {
+                this.$parent.jumpTo(this.changedValue - 0.5)
+            } else this.commit(this.jump)
         },
-        commit() {
+        commit(jump = true) {
             this.changedValue = this.changingValue
             this.$emit('input', this.changingValue)
-            if (this.jump) this.$parent.jumpTo(this.changedValue)
+            if (jump) this.$parent.jumpTo(this.changedValue)
         }
     }
 }

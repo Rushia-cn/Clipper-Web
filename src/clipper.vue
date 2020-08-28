@@ -4,13 +4,19 @@
         <youtube :videoId="videoId" @ready="videoReady" :player-vars="playerVars" :player-width="playerWidth" :player-height="playerHeight" ref="ytb"></youtube>
         <div id="upper">
             <div id="controller">
-                <vs-button size="small" type="flat" @click="forward(-1.5)" title="Rewind for 1.5s">
-                    <Rewind :size="20" />
-                </vs-button>
-                <vs-button size="large" class="large-btn" type="filled" @click="newTS" title="Add a new interval">{{ formatedCurTime }}</vs-button>
-                <vs-button size="small" type="flat" @click="forward(1.5)" title="Forward for 1.5s">
-                    <FastForward :size="20" />
-                </vs-button>
+                <vs-tooltip color="primary" text="Rewind for 1.5s">
+                    <vs-button size="small" type="flat" @click="forward(-1.5)" title="Rewind for 1.5s">
+                        <Rewind :size="20" />
+                    </vs-button>
+                </vs-tooltip>
+                <vs-tooltip color="primary" text="Create a new interval with current time">
+                    <vs-button size="large" class="large-btn" type="filled" @click="newTS" title="Add a new interval">{{ formatedCurTime }}</vs-button>
+                </vs-tooltip>
+                <vs-tooltip color="primary" text="Rewind for 1.5s">
+                    <vs-button size="small" type="flat" @click="forward(1.5)" title="Forward for 1.5s">
+                        <FastForward :size="20" />
+                    </vs-button>
+                </vs-tooltip>
             </div>
             <div id="id-input" title="Press enter to apply">
                 <a style="wrap: none">Youtube Video ID or URL (Press enter)</a>
@@ -39,7 +45,7 @@
                             {{ v.to - v.from > 0 ? $t2s(v.to - v.from) : 'N/A' }}
                         </a>
                         <vs-button type="border" class="control-button" v-if="v.to == null" @click="setTo(v)">Add To</vs-button>
-                        <controlButton v-if="!(v.to == null)" v-model="v.to" :jump="false" />
+                        <controlButton v-if="!(v.to == null)" v-model="v.to" :jump="!v.looping" />
                     </div>
                     Category:
                     <vs-input title="Category: For Buttons that follows RushiaButton's standard" v-model="v.cat">
@@ -73,9 +79,9 @@
             <vs-input v-model="tempName[k]" class="prompt-input"></vs-input>
         </div>
     </vs-prompt>
-    <vs-popup class="holamundo" :title="popup.title" :active.sync="popup.show">
+    <vs-popup :title="popup.title" :active.sync="popup.show">
         <pre v-highlightjs="popup.content" v-if="popup.isJson"><code class="json"></code></pre>
-        <a v-if="!popup.isJson">{{ popup.content }}</a>
+        <vs-textarea v-if="!popup.isJson" v-model="popup.content" height="500px"></vs-textarea>
     </vs-popup>
 </div>
 </template>
@@ -102,7 +108,7 @@ export default {
             items: [],
             dialog: false,
             updateCurTime: null,
-            updateVid: this.videoId,
+            updateVid: null,
             updatingName: false,
             changingItemIndex: null,
             tempName: {
@@ -120,6 +126,7 @@ export default {
     },
     mounted() {
         this.player = this.$refs.player
+        this.updateVid = this.videoId
     },
     computed: {
         videoURL() {
@@ -164,7 +171,7 @@ export default {
         callExportMethod(func) {
             if (this.items.length === 0) {
                 this.alert(
-                    "Not timestamps made yet, start by adding a new item with clip button and finish it with 'addTo' button (and names / category)",
+                    "No timestamps made yet, start by adding a new item with clip button and finish it with 'addTo' button (and names / category)",
                     7000
                 )
                 return
@@ -266,6 +273,10 @@ export default {
 </script>
 
 <style>
+textarea {
+    height: 100%;
+}
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
