@@ -8,10 +8,6 @@
 export default {
     props: {
         value: Number,
-        precision: {
-            type: Number,
-            default: 0.03
-        },
         jump: {
             type: Boolean,
             default: true
@@ -26,7 +22,8 @@ export default {
             },
             changedValue: this.value,
             changingValue: this.value,
-            lastDown: null
+            lastDown: null,
+            precision: 0.03
         }
     },
     watch: {
