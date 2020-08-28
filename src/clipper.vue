@@ -84,11 +84,13 @@
 </template>
 
 <script>
-import controlButton from '@/components/controlButton'
+import controlButton from '@/controlButton'
+import exportConfig from '@/export.js'
+
 import Rewind from 'vue-material-design-icons/Rewind.vue'
 import FastForward from 'vue-material-design-icons/FastForward.vue'
 import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline.vue'
-import exportConfig from './export.js'
+
 export default {
     data() {
         return {
