@@ -35,11 +35,11 @@ export default [
                 if (!(item.from !== null && item.to !== null)) {
                     return
                 }
-                return `https://www.youtube.com/watch?v=${vm.videoId} 
-                            ${vm.$t2s(item.from)} 
-                            ${vm.$t2s(item.to)} 
-                            ${item.cat ? item.cat : ""} 
-                            ${formatName(item.name)}`
+                return `${vm.videoURL} 
+                        ${vm.$t2s(item.from)} 
+                        ${vm.$t2s(item.to)} 
+                        ${item.cat ? item.cat : ""} 
+                        ${formatName(item.name)}`
             }
             vm.showPopup("Rushia Button batch", items.map(e => genBat(e)).join("\n"))
         }

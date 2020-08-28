@@ -7,18 +7,14 @@
                 <vs-button size="small" type="flat" @click="forward(-1.5)" title="Rewind for 1.5s">
                     <Rewind :size="20" />
                 </vs-button>
-                <vs-button size="large" class="large-btn" type="filled" @click="addFrom" title="Add a new interval">From</vs-button>
-                <a style="cursor:pointer" @click="startDialog">{{
-            formatedCurTime
-          }}</a>
-                <vs-button size="large" class="large-btn" type="filled" @click="addTo" title="Set last.to with current time">To</vs-button>
+                <vs-button size="large" class="large-btn" type="filled" @click="newTS" title="Add a new interval">{{ formatedCurTime }}</vs-button>
                 <vs-button size="small" type="flat" @click="forward(1.5)" title="Forward for 1.5s">
                     <FastForward :size="20" />
                 </vs-button>
             </div>
             <div id="id-input" title="Press enter to apply">
                 <a style="wrap: none">Youtube Video ID or URL (Press enter)</a>
-                <vs-input v-model="updateVid" @keydown.enter="videoId = $getId(updateVid)" />
+                <vs-input id="ip-input-comp" v-model="updateVid" @keydown.enter="videoId = $getId(updateVid)" />
             </div>
             <div id="submit">
                 <vs-dropdown @mousedown="callExportMethod(exportConfig[0].method)">
@@ -42,7 +38,8 @@
                         <a style="width: 105px; height:1rem" title="Clip Length">
                             {{ v.to - v.from > 0 ? $t2s(v.to - v.from) : 'N/A' }}
                         </a>
-                        <controlButton v-model="v.to" />
+                        <vs-button type="border" class="control-button" v-if="v.to == null" @click="setTo(v)">Add To</vs-button>
+                        <controlButton v-if="!(v.to == null)" v-model="v.to" />
                     </div>
                     Category:
                     <vs-input title="Category: For Buttons that follows RushiaButton's standard" v-model="v.cat">
@@ -125,16 +122,11 @@ export default {
         this.player = this.$refs.player
     },
     computed: {
+        videoURL() {
+            return this.ytb.playerInfo.videoUrl
+        },
         formatedCurTime() {
             return this.$t2s(this.curTime)
-        },
-        last() {
-            return this.items[this.items.length - 1]
-        },
-        lastComplete() {
-            if (this.items.length === 0) return true
-            const last = this.last
-            return last.from !== null && last.to !== null
         },
         looping() {
             return {
@@ -172,7 +164,7 @@ export default {
         callExportMethod(func) {
             if (this.items.length === 0) {
                 this.alert(
-                    "'items' is empty, start by adding a new item with `From` button and finish it with 'To' button (and names / category)",
+                    "Not timestamps made yet, start by adding a new item with clip button and finish it with 'addTo' button (and names / category)",
                     7000
                 )
                 return
@@ -223,20 +215,12 @@ export default {
         completed(ts) {
             return ts.from !== null && ts.to !== null
         },
-        addFrom() {
-            if (this.lastComplete) this.newTS()
-            else this.alert("Use 'To' to complete this clip first!")
-        },
-        addTo() {
-            const last = this.last
-            if (this.lastComplete) {
-                this.alert("Create one with 'From' button first")
-                return
-            } else if (last.from >= this.curTime) {
+        setTo(item) {
+            if (item.from >= this.curTime) {
                 this.alert("'To' must be greater than 'From'")
                 return
             }
-            last.to = this.curTime
+            item.to = this.curTime
         },
         jumpTo(sec) {
             if (typeof sec !== 'number') sec = this.$s2t(sec)
@@ -298,6 +282,8 @@ export default {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    align-items: center;
+    margin: 5px 0;
 }
 
 #id-input {
@@ -306,10 +292,24 @@ export default {
     align-items: center;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
+    flex-grow: 2;
 }
 
 #id-input a {
     font-size: 8px;
+    position: absolute;
+    z-index: 100;
+    top: -15px;
+}
+
+#id-input div {
+    width: 100%;
+}
+
+#ip-input-comp {
+    cursor: pointer !important;
+    width: 100% !important;
 }
 
 #submit {
@@ -317,13 +317,12 @@ export default {
     align-items: center;
     justify-content: center;
     margin-left: 10px;
-    flex-grow: 2;
+    flex-grow: 1;
 }
 
 #controller {
     display: flex;
     align-items: center;
-    flex-grow: 1;
 }
 
 #list-view {
@@ -371,8 +370,11 @@ a {
 }
 
 .vs-con-dropdown {
-    cursor: pointer !important;
     width: 100%;
+}
+
+.vs-con-input {
+    width: 100% !important;
 }
 
 .con-vs-alert {
@@ -381,11 +383,6 @@ a {
 
 .vs-alert {
     color: #fff;
-}
-
-.btn-drop {
-    border-radius: 0px 5px 5px 0px;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btnx {
