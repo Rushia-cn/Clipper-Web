@@ -1,6 +1,6 @@
 <template>
 <vs-button class="control-button" @mousedown="move" @mousewheel.prevent="wheel" type="border" title="Drag or scroll to fine-tune" @mouseover="hover = true" @mouseleave="hover = false">
-    {{$t2s(changingValue)}}
+    {{ $t2s(changingValue) }}
 </vs-button>
 </template>
 
@@ -11,7 +11,8 @@ export default {
         precision: {
             type: Number,
             default: 0.03
-        }
+        },
+        jump: Boolean
     },
     data() {
         return {
@@ -48,9 +49,8 @@ export default {
             this.holding = true
             this.xy.x = e.clientX
             this.xy.y = e.clientY
-            window.addEventListener("mousemove", this.mouseMove)
-            window.addEventListener("mouseup", this.mouseUp)
-
+            window.addEventListener('mousemove', this.mouseMove)
+            window.addEventListener('mouseup', this.mouseUp)
         },
         mouseMove(e) {
             const dx = e.clientX - this.xy.x
@@ -59,14 +59,14 @@ export default {
             this.changingValue = num
         },
         mouseUp() {
-            window.removeEventListener("mousemove", this.mouseMove);
-            window.removeEventListener("mouseup", this.mouseUp);
+            window.removeEventListener('mousemove', this.mouseMove)
+            window.removeEventListener('mouseup', this.mouseUp)
             this.commit()
         },
         commit() {
             this.changedValue = this.changingValue
             this.$emit('input', this.changingValue)
-            this.$parent.jumpTo(this.changedValue)
+            if (this.jump) this.$parent.jumpTo(this.changedValue)
         }
     }
 }
@@ -76,6 +76,6 @@ export default {
 .control-button {
     margin: 3px 10px;
     width: 10rem;
-    transition: all ease 0.3s
+    transition: all ease 0.3s;
 }
 </style>

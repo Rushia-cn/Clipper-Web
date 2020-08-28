@@ -39,7 +39,7 @@
                             {{ v.to - v.from > 0 ? $t2s(v.to - v.from) : 'N/A' }}
                         </a>
                         <vs-button type="border" class="control-button" v-if="v.to == null" @click="setTo(v)">Add To</vs-button>
-                        <controlButton v-if="!(v.to == null)" v-model="v.to" />
+                        <controlButton v-if="!(v.to == null)" v-model="v.to" :jump="false" />
                     </div>
                     Category:
                     <vs-input title="Category: For Buttons that follows RushiaButton's standard" v-model="v.cat">
@@ -271,7 +271,7 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    margin: 20px auto;
+    margin: 0.9rem auto;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -283,12 +283,12 @@ export default {
     width: 100%;
     flex-wrap: wrap;
     align-items: center;
-    margin: 5px 0;
+    margin: 0.4rem 0;
 }
 
 #id-input {
     display: flex;
-    margin: 10px;
+    margin: 0.4rem;
     align-items: center;
     flex-direction: column;
     align-items: flex-start;
@@ -297,10 +297,10 @@ export default {
 }
 
 #id-input a {
-    font-size: 8px;
+    font-size: 0.3rem;
     position: absolute;
     z-index: 100;
-    top: -15px;
+    top: -1rem;
 }
 
 #id-input div {
@@ -316,7 +316,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 10px;
+    margin-left: 0.4rem;
     flex-grow: 1;
 }
 
@@ -329,20 +329,20 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding-left: 40px;
+    padding-left: 1.6rem;
 }
 
 main {
     box-sizing: border-box;
-    max-width: 1200px;
-    padding: 10px;
+    max-width: 50rem;
+    padding: 0.4rem;
 }
 
 footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 20px;
+    padding: 0.8rem;
     max-width: 990px;
 }
 
@@ -351,18 +351,18 @@ a {
 }
 
 .title {
-    margin: 5px 10px;
+    margin: 0.2rem 0.4rem;
 }
 
 .edit-line {
     display: flex;
     align-items: center;
-    margin: 3px 0;
+    margin: 0.125rem 0;
     justify-content: space-between;
 }
 
 .edit-line a {
-    margin: 0 10px;
+    margin: 0 0.4rem;
 }
 
 .prompt-input {
@@ -383,11 +383,6 @@ a {
 
 .vs-alert {
     color: #fff;
-}
-
-.btnx {
-    margin-left: 10px !important;
-    border-radius: 5px 0px 0px 5px;
 }
 
 .large-btn {
