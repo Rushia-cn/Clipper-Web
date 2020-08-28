@@ -44,7 +44,7 @@
                         <a style="width: 105px; height:1rem" title="Clip Length">
                             {{ v.to - v.from > 0 ? $t2s(v.to - v.from) : 'N/A' }}
                         </a>
-                        <vs-button type="border" class="control-button" v-if="v.to == null" @click="setTo(v)">Add To</vs-button>
+                        <vs-button type="border" class="control-button" v-if="v.to == null" @click="setTo(v)">Set "To" value</vs-button>
                         <controlButton v-if="!(v.to == null)" v-model="v.to" :jump="!v.looping" />
                     </div>
                     Category:
@@ -80,8 +80,7 @@
         </div>
     </vs-prompt>
     <vs-popup :title="popup.title" :active.sync="popup.show">
-        <pre v-highlightjs="popup.content" v-if="popup.isJson"><code class="json"></code></pre>
-        <vs-textarea v-if="!popup.isJson" v-model="popup.content" height="500px"></vs-textarea>
+        <vs-textarea v-model="popup.content" height="500px"></vs-textarea>
     </vs-popup>
 </div>
 </template>
@@ -152,12 +151,11 @@ export default {
         }
     },
     methods: {
-        showPopup(title, content, isJson = false) {
+        showPopup(title, content) {
             this.popup = {
                 show: true,
                 title,
-                content,
-                isJson
+                content
             }
         },
         afterPopup() {
@@ -175,7 +173,10 @@ export default {
                     7000
                 )
                 return
-            } else func(this.items, this)
+            } else {
+                this.pause()
+                func(this.items, this)
+            }
         },
         alert(content, timeout = 3000) {
             this.alertContent = content
