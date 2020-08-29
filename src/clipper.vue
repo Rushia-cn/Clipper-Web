@@ -126,6 +126,24 @@ export default {
             }
         }
     },
+    watch: {
+        items(newItems) {
+            console.log(newItems)
+            window.localStorage.setItem('items', JSON.stringify(newItems))
+        }
+    },
+    created() {
+        let got = JSON.parse(window.localStorage.getItem('items'))
+        if (got === null) {
+            got = []
+            window.localStorage.setItem('items', JSON.stringify(got))
+        }
+        this.items = got
+        window.addEventListener('beforeunload', () => {
+            console.log('Saving items to localstorage')
+            window.localStorage.setItem('items', JSON.stringify(this.items))
+        })
+    },
     mounted() {
         this.player = this.$refs.player
         this.updateVid = this.videoId
@@ -154,6 +172,8 @@ export default {
         }
     },
     methods: {
+        getItem() {},
+        setItem() {},
         showPopup(title, content) {
             this.popup = {
                 show: true,
@@ -221,7 +241,6 @@ export default {
                     jp: ''
                 }
             })
-            this.$forceUpdate()
         },
         completed(ts) {
             return ts.from !== null && ts.to !== null
