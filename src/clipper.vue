@@ -22,6 +22,9 @@
                 <a style="wrap: none">Youtube Video ID or URL (Press enter)</a>
                 <vs-input id="ip-input-comp" v-model="updateVid" @keydown.enter="videoId = $getId(updateVid)" />
             </div>
+            <div id="apply">
+                <vs-button type="border" title="Apply" size="small" style="width: 100%" @click="videoId = $getId(updateVid)">Apply</vs-button>
+            </div>
             <div id="submit">
                 <vs-dropdown @mousedown="callExportMethod(exportConfig[0].method)">
                     <vs-button type="filled" size="large" title="Upload Directly" style="width: 100%">{{ exportConfig[0].name }}</vs-button>
@@ -312,7 +315,7 @@ textarea {
     font-size: 0.3rem;
     position: absolute;
     z-index: 100;
-    top: -1rem;
+    top: -16px;
 }
 
 #id-input div {
@@ -322,6 +325,14 @@ textarea {
 #ip-input-comp {
     cursor: pointer !important;
     width: 100% !important;
+}
+
+#apply {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.4rem;
+    min-width: 4rem;
 }
 
 #submit {
