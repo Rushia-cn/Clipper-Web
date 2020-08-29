@@ -128,7 +128,6 @@ export default {
     },
     watch: {
         items(newItems) {
-            console.log(newItems)
             window.localStorage.setItem('items', JSON.stringify(newItems))
         }
     },
